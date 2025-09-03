@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronDown, ChevronUp, Package, Plus, Trash2, ArrowDown } from 'lucide-react';
+import { ChevronDown, ChevronUp, Package, Plus, Trash2 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import TolerancePanel from './TolerancePanel';
+import IdentificationModal from './IdentificationModal';
 
 const ItemDetail = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -98,14 +100,16 @@ const ItemDetail = () => {
                       <th className="erp-table-cell font-medium">HSN Code</th>
                       <th className="erp-table-cell font-medium">Make</th>
                       <th className="erp-table-cell font-medium">Description</th>
+                      <th className="erp-table-cell font-medium">Cost Center</th>
                       <th className="erp-table-cell font-medium">Challan Qty</th>
                       <th className="erp-table-cell font-medium">Received Qty</th>
                       <th className="erp-table-cell font-medium">Accepted Qty</th>
                       <th className="erp-table-cell font-medium">Rejected Qty</th>
                       <th className="erp-table-cell font-medium">Rate</th>
                       <th className="erp-table-cell font-medium">Amount</th>
+                      <th className="erp-table-cell font-medium">Tolerance</th>
                       <th className="erp-table-cell font-medium">Warehouse</th>
-                      <th className="erp-table-cell font-medium">Identification</th>
+                      <th className="erp-table-cell font-medium">Identifier</th>
                       <th className="erp-table-cell font-medium">Remarks</th>
                       <th className="erp-table-cell font-medium">Actions</th>
                     </tr>
@@ -147,6 +151,19 @@ const ItemDetail = () => {
                             placeholder="Description"
                             className="min-w-[120px] text-xs"
                           />
+                        </td>
+                        <td className="erp-table-cell">
+                          <Select>
+                            <SelectTrigger className="min-w-[100px] text-xs">
+                              <SelectValue placeholder="Cost Center" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="kiln">Kiln</SelectItem>
+                              <SelectItem value="production">Production</SelectItem>
+                              <SelectItem value="maintenance">Maintenance</SelectItem>
+                              <SelectItem value="admin">Admin</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </td>
                         <td className="erp-table-cell">
                           <Input 
@@ -197,6 +214,13 @@ const ItemDetail = () => {
                           />
                         </td>
                         <td className="erp-table-cell">
+                          <TolerancePanel 
+                            itemId={item.id}
+                            positiveTolerancePercentage={5}
+                            negativeTolerancePercentage={2}
+                          />
+                        </td>
+                        <td className="erp-table-cell">
                           <Select>
                             <SelectTrigger className="min-w-[100px] text-xs">
                               <SelectValue placeholder="Warehouse" />
@@ -209,9 +233,10 @@ const ItemDetail = () => {
                           </Select>
                         </td>
                         <td className="erp-table-cell">
-                          <Button variant="outline" size="sm" className="text-xs">
-                            <ArrowDown className="w-3 h-3" />
-                          </Button>
+                          <IdentificationModal 
+                            itemId={item.id}
+                            itemName={item.itemName}
+                          />
                         </td>
                         <td className="erp-table-cell">
                           <Input 

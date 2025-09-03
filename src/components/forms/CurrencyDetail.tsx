@@ -38,19 +38,6 @@ const CurrencyDetail = () => {
                 </Select>
               </div>
 
-              <div className="erp-form-field">
-                <Label className="erp-label-required">Rate Type</Label>
-                <Select>
-                  <SelectTrigger className="erp-select">
-                    <SelectValue placeholder="Select rate type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="fixed">Fixed</SelectItem>
-                    <SelectItem value="floating">Floating</SelectItem>
-                    <SelectItem value="manual">Manual</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
 
               <div className="erp-form-field">
                 <Label className="erp-label-required">Exchange Rate</Label>

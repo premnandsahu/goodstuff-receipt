@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Save, Send, X } from 'lucide-react';
 import GRNHeader from '@/components/forms/GRNHeader';
@@ -7,8 +7,11 @@ import GeneralDetail from '@/components/forms/GeneralDetail';
 import CurrencyDetail from '@/components/forms/CurrencyDetail';
 import TransportationDetail from '@/components/forms/TransportationDetail';
 import ItemDetail from '@/components/forms/ItemDetail';
+import PurchaseOrderSelection from '@/components/forms/PurchaseOrderSelection';
 
 const GRNForm = () => {
+  const [refDocType, setRefDocType] = useState('');
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -47,6 +50,11 @@ const GRNForm = () => {
 
           {/* General Detail Section */}
           <GeneralDetail />
+
+          {/* Purchase Order Selection - Show only when ref doc type is Purchase Order */}
+          {refDocType === 'purchase-order' && (
+            <PurchaseOrderSelection />
+          )}
 
           {/* Currency Detail Section */}
           <CurrencyDetail />
