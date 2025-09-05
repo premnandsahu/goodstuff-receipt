@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,11 +9,34 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import TolerancePanel from './TolerancePanel';
 import IdentificationModal from './IdentificationModal';
 
-const ItemDetail = () => {
+interface POItem {
+  id: string;
+  poNumber: string;
+  poDate: string;
+  itemName: string;
+  currency: string;
+  preGRNQty: number;
+  balQty: number;
+  warehouse: string;
+  projectNo: string;
+  unit: string;
+  make: string;
+  description: string;
+  rate: number;
+}
+
+interface ItemDetailProps {
+  refDocType?: string;
+  selectedPOItems?: POItem[];
+}
+
+const ItemDetail: React.FC<ItemDetailProps> = ({ refDocType = '', selectedPOItems = [] }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [items, setItems] = useState([
     {
       id: 1,
+      poNumber: '25-26/101',
+      poDate: '01.05.2025',
       itemName: 'Bearing 505',
       unit: 'Nos',
       make: 'NBC',
@@ -27,13 +50,45 @@ const ItemDetail = () => {
       rate: 500.00,
       amount: 4000.00,
       warehouse: 'Main Store',
-      remarks: '1 Qty is faulty'
+      remarks: '1 Qty is faulty',
+      firstCF: '100 Kg',
+      secondCF: '1 Quintale'
     }
   ]);
+
+  // Add selected PO items to the grid
+  useEffect(() => {
+    if (selectedPOItems.length > 0) {
+      const newItems = selectedPOItems.map((poItem, index) => ({
+        id: items.length + index + 1,
+        poNumber: poItem.poNumber,
+        poDate: poItem.poDate,
+        itemName: poItem.itemName,
+        unit: poItem.unit,
+        make: poItem.make,
+        description: poItem.description,
+        costCenter: '',
+        challanQty: 0,
+        receivedQty: 0,
+        acceptedQty: 0,
+        balanceQty: poItem.balQty,
+        rejectedQty: 0,
+        rate: poItem.rate,
+        amount: 0,
+        warehouse: poItem.warehouse,
+        remarks: '',
+        firstCF: '',
+        secondCF: ''
+      }));
+      setItems(prev => [...prev, ...newItems]);
+    }
+  }, [selectedPOItems]);
 
   const addNewItem = () => {
     const newItem = {
       id: items.length + 1,
+      poNumber: '',
+      poDate: '',
       itemName: '',
       unit: '',
       make: '',
@@ -47,7 +102,9 @@ const ItemDetail = () => {
       rate: 0,
       amount: 0,
       warehouse: '',
-      remarks: ''
+      remarks: '',
+      firstCF: '',
+      secondCF: ''
     };
     setItems([...items, newItem]);
   };
@@ -95,22 +152,32 @@ const ItemDetail = () => {
                   <thead className="erp-table-header">
                     <tr>
                       <th className="erp-table-cell font-medium">S.No.</th>
+                      {refDocType === 'purchase-order' && (
+                        <>
+                          <th className="erp-table-cell font-medium">PO No.</th>
+                          <th className="erp-table-cell font-medium">Date</th>
+                        </>
+                      )}
                       <th className="erp-table-cell font-medium">Item Name</th>
                       <th className="erp-table-cell font-medium">Unit</th>
-                      <th className="erp-table-cell font-medium">HSN Code</th>
                       <th className="erp-table-cell font-medium">Make</th>
                       <th className="erp-table-cell font-medium">Description</th>
                       <th className="erp-table-cell font-medium">Cost Center</th>
                       <th className="erp-table-cell font-medium">Challan Qty</th>
                       <th className="erp-table-cell font-medium">Received Qty</th>
                       <th className="erp-table-cell font-medium">Accepted Qty</th>
+                      <th className="erp-table-cell font-medium">Balance Qty</th>
+                      <th className="erp-table-cell font-medium">Positive Tolerance Qty</th>
+                      <th className="erp-table-cell font-medium">Negative Tolerance Qty</th>
                       <th className="erp-table-cell font-medium">Rejected Qty</th>
                       <th className="erp-table-cell font-medium">Rate</th>
                       <th className="erp-table-cell font-medium">Amount</th>
-                      <th className="erp-table-cell font-medium">Tolerance</th>
+                      <th className="erp-table-cell font-medium">First CF</th>
+                      <th className="erp-table-cell font-medium">Second CF</th>
                       <th className="erp-table-cell font-medium">Warehouse</th>
-                      <th className="erp-table-cell font-medium">Identifier</th>
-                      <th className="erp-table-cell font-medium">Remarks</th>
+                      <th className="erp-table-cell font-medium">Identification/ Dimension</th>
+                      <th className="erp-table-cell font-medium">Remark</th>
+                      <th className="erp-table-cell font-medium">Information</th>
                       <th className="erp-table-cell font-medium">Actions</th>
                     </tr>
                   </thead>
@@ -118,6 +185,12 @@ const ItemDetail = () => {
                     {items.map((item, index) => (
                       <tr key={item.id} className={`erp-table-row ${index % 2 === 0 ? 'erp-table-row-even' : ''}`}>
                         <td className="erp-table-cell">{index + 1}</td>
+                        {refDocType === 'purchase-order' && (
+                          <>
+                            <td className="erp-table-cell">{item.poNumber}</td>
+                            <td className="erp-table-cell">{item.poDate}</td>
+                          </>
+                        )}
                         <td className="erp-table-cell">
                           <Input 
                             value={item.itemName}
@@ -130,12 +203,6 @@ const ItemDetail = () => {
                             value={item.unit}
                             placeholder="Unit"
                             className="min-w-[80px] text-xs"
-                          />
-                        </td>
-                        <td className="erp-table-cell">
-                          <Input 
-                            placeholder="HSN Code"
-                            className="min-w-[100px] text-xs"
                           />
                         </td>
                         <td className="erp-table-cell">
@@ -192,6 +259,28 @@ const ItemDetail = () => {
                         <td className="erp-table-cell">
                           <Input 
                             type="number"
+                            value={item.balanceQty}
+                            readOnly
+                            className="min-w-[90px] text-xs bg-muted"
+                          />
+                        </td>
+                        <td className="erp-table-cell">
+                          <TolerancePanel 
+                            itemId={item.id}
+                            positiveTolerancePercentage={5}
+                            negativeTolerancePercentage={2}
+                          />
+                        </td>
+                        <td className="erp-table-cell">
+                          <TolerancePanel 
+                            itemId={item.id}
+                            positiveTolerancePercentage={5}
+                            negativeTolerancePercentage={2}
+                          />
+                        </td>
+                        <td className="erp-table-cell">
+                          <Input 
+                            type="number"
                             value={calculateRejectedQty(item.receivedQty, item.acceptedQty)}
                             readOnly
                             className="min-w-[90px] text-xs bg-muted"
@@ -214,10 +303,17 @@ const ItemDetail = () => {
                           />
                         </td>
                         <td className="erp-table-cell">
-                          <TolerancePanel 
-                            itemId={item.id}
-                            positiveTolerancePercentage={5}
-                            negativeTolerancePercentage={2}
+                          <Input 
+                            value={item.firstCF}
+                            placeholder="First CF"
+                            className="min-w-[80px] text-xs"
+                          />
+                        </td>
+                        <td className="erp-table-cell">
+                          <Input 
+                            value={item.secondCF}
+                            placeholder="Second CF"
+                            className="min-w-[80px] text-xs"
                           />
                         </td>
                         <td className="erp-table-cell">
@@ -244,6 +340,15 @@ const ItemDetail = () => {
                             placeholder="Remarks"
                             className="min-w-[100px] text-xs"
                           />
+                        </td>
+                        <td className="erp-table-cell">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            className="text-xs"
+                          >
+                            Info
+                          </Button>
                         </td>
                         <td className="erp-table-cell">
                           <Button 

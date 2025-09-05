@@ -8,9 +8,11 @@ import CurrencyDetail from '@/components/forms/CurrencyDetail';
 import TransportationDetail from '@/components/forms/TransportationDetail';
 import ItemDetail from '@/components/forms/ItemDetail';
 import PurchaseOrderSelection from '@/components/forms/PurchaseOrderSelection';
+import POItemDetail from '@/components/forms/POItemDetail';
 
 const GRNForm = () => {
   const [refDocType, setRefDocType] = useState('');
+  const [selectedPOItems, setSelectedPOItems] = useState([]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -56,6 +58,11 @@ const GRNForm = () => {
             <PurchaseOrderSelection />
           )}
 
+          {/* PO Item Detail - Show only when ref doc type is Purchase Order */}
+          {refDocType === 'purchase-order' && (
+            <POItemDetail onItemsSelected={setSelectedPOItems} />
+          )}
+
           {/* Currency Detail Section */}
           <CurrencyDetail />
 
@@ -63,7 +70,7 @@ const GRNForm = () => {
           <TransportationDetail />
 
           {/* Item Detail Section */}
-          <ItemDetail />
+          <ItemDetail refDocType={refDocType} selectedPOItems={selectedPOItems} />
         </div>
 
         {/* Form Footer */}
