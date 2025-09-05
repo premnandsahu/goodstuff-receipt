@@ -8,7 +8,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Calendar, ChevronDown, ChevronUp, FileText, Search } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
-const GeneralDetail = () => {
+interface GeneralDetailProps {
+  onRefDocTypeChange?: (value: string) => void;
+}
+
+const GeneralDetail: React.FC<GeneralDetailProps> = ({ onRefDocTypeChange }) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -29,7 +33,7 @@ const GeneralDetail = () => {
               <div className="erp-form-grid">
                 <div className="erp-form-field">
                   <Label className="erp-label-required">Ref Doc Type No.</Label>
-                  <Select>
+                  <Select onValueChange={onRefDocTypeChange}>
                     <SelectTrigger className="erp-select">
                       <SelectValue placeholder="Select reference type" />
                     </SelectTrigger>

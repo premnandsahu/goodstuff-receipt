@@ -51,12 +51,7 @@ const GRNForm = () => {
           <DocumentDetail />
 
           {/* General Detail Section */}
-          <GeneralDetail />
-
-          {/* Purchase Order Selection - Show only when ref doc type is Purchase Order */}
-          {refDocType === 'purchase-order' && (
-            <PurchaseOrderSelection />
-          )}
+          <GeneralDetail onRefDocTypeChange={setRefDocType} />
 
           {/* PO Item Detail - Show only when ref doc type is Purchase Order */}
           {refDocType === 'purchase-order' && (

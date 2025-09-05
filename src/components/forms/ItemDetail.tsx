@@ -265,17 +265,19 @@ const ItemDetail: React.FC<ItemDetailProps> = ({ refDocType = '', selectedPOItem
                           />
                         </td>
                         <td className="erp-table-cell">
-                          <TolerancePanel 
-                            itemId={item.id}
-                            positiveTolerancePercentage={5}
-                            negativeTolerancePercentage={2}
+                          <Input 
+                            type="number"
+                            defaultValue="1"
+                            step="0.001"
+                            className="min-w-[90px] text-xs"
                           />
                         </td>
                         <td className="erp-table-cell">
-                          <TolerancePanel 
-                            itemId={item.id}
-                            positiveTolerancePercentage={5}
-                            negativeTolerancePercentage={2}
+                          <Input 
+                            type="number"
+                            defaultValue="1"
+                            step="0.001"
+                            className="min-w-[90px] text-xs"
                           />
                         </td>
                         <td className="erp-table-cell">
